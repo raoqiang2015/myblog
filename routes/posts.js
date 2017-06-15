@@ -48,3 +48,5 @@ router.get('/:postId/comment',checkLogin,function(req,res,next){
 router.get('/:postId/comment/:commentId/remove',checkLogin,function(req,res,next){
   res.send(req.flash());
 });
+
+module.exports = router;
