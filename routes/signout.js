@@ -9,4 +9,4 @@ router.get('/',checkLogin,function(req,res,next){
   res.send(req.flash());
 });
 
-module.exprots = router;
+module.exports = router;

@@ -1,7 +1,7 @@
 /*
 *路由入口
 */
-module.exprots = function(app){
+module.exports = function(app){
   app.get('/', function (req, res) {
     res.redirect('/posts');
   });

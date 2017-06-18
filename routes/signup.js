@@ -3,7 +3,6 @@ var router = express.Router();
 
 var checkNotLogin = require('../middlewares/check.js').checkNotLogin;
 
-
 //GET /signup 注册页
 router.get('/',checkNotLogin,function(req,res,next){
   res.send(req.flash());
@@ -14,4 +13,4 @@ router.post('/',checkNotLogin,function(req,res,next){
   res.send(req.flash());
 });
 
-module.exprots = router;
+module.exports = router;
