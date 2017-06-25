@@ -1,12 +1,17 @@
 /*
 *路由入口
 */
-module.exports = function(app){
-  app.get('/', function (req, res) {
+import signupRoute from './signup';
+import signinRoute from './signin';
+import signoutRoute from './signout';
+import postsRoute from './posts';
+
+module.exports = (app) => {
+  app.get('/', (req, res) => {
     res.redirect('/posts');
   });
-  app.use('/signup', require('./signup'));
-  app.use('/signin', require('./signin'));
-  app.use('/signout', require('./signout'));
-  app.use('/posts', require('./posts'));
+  app.use('/signup', signupRoute);
+  app.use('/signin', signinRoute);
+  app.use('/signout', signoutRoute);
+  app.use('/posts', postsRoute);
 };

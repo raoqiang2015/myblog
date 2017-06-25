@@ -1,17 +1,17 @@
-function Person(name,age,job){
-  //ownProperties
+function Person(name, age, job) {
+  // ownProperties
   this.name = name;
   this.age = age;
   this.job = job;
-  this.friends = ['a','d'];
+  this.friends = ['a', 'd'];
 }
 
 Person.prototype = {
   construct: Person,
-  sayHi: function(){
+  sayHi() {
     alert(this.name);
-  }
+  },
 };
 
-var person1 = new Person();
-var person2 = new person();
+const person1 = new Person('raoqiang', 18, 'it1');
+const person2 = new Person('raocheng', 20, 'it2');

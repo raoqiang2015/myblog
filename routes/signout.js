@@ -1,11 +1,12 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
 
-var checkLogin = require('../middlewares/check.js').checkLogin;
+const router = express.Router();
+
+const checkLogin = require('../middlewares/check.js').checkLogin;
 
 
-//GET /signout 登出页
-router.get('/',checkLogin,function(req,res,next){
+// GET /signout 登出页
+router.get('/', checkLogin, (req, res) => {
   res.send(req.flash());
 });
 
