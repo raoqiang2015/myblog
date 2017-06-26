@@ -3,7 +3,8 @@ module.exports = {
   extends: "airbnb",
   rules: {
     "semi": ["error", "always"],
-    "consistent-return": "off"
+    "consistent-return": "off",
+    "linebreak-style": "off"
   },
   parserOptions: {
     "ecmaVersion": 6,

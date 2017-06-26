@@ -5,12 +5,12 @@ const router = express.Router();
 const checkNotLogin = require('../middlewares/check.js').checkNotLogin;
 
 // GET /signin 登录页
-router.get('/', checkNotLogin, (req, res, next) => {
+router.get('/', checkNotLogin, (req, res) => {
   res.send(req.flash());
 });
 
 // POST /signin 用户登录
-router.post('/', checkNotLogin, (req, res, next) => {
+router.post('/', checkNotLogin, (req, res) => {
   res.send(req.flash());
 });
 
