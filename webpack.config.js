@@ -1,12 +1,18 @@
-import path from 'path';
+// import path from 'path';
+var path = require('path');
 
-export default {
-  entry: './src/index.js',
+module.exports = {
+  entry: './index.js',
   output: {
     filename: 'bundle.js',
     path: path.resolve(__dirname, 'dist'),
   },
   module: {
+    loaders: [{
+      test: /\.js$/,
+      exclude: /node_modules/,
+      loader: 'babel-loader',
+    }],
     rules: [
       {
         test: /\.css$/,
@@ -28,5 +34,8 @@ export default {
         ],
       },
     ],
+  },
+  node: {
+    fs: 'empty',
   },
 };

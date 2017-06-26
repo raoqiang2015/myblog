@@ -4,7 +4,8 @@ module.exports = {
   rules: {
     "semi": ["error", "always"],
     "consistent-return": "off",
-    "linebreak-style": "off"
+    "linebreak-style": "off",
+    "no-var": "off"
   },
   parserOptions: {
     "ecmaVersion": 6,
