@@ -1,4 +1,4 @@
-import User from '../lib/mongo';
+import { User } from '../lib/mongo';
 
 export default {
   // 注册用户
@@ -8,7 +8,7 @@ export default {
   // },
   create: user => User.create(user).exec(),
   getUserByName: name => User
-      .findOne({ name })
-      .addCreatedAt()
-      .exec(),
+    .findOne({ name })
+    .addCreatedAt()
+    .exec(),
 };

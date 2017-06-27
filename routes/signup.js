@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import sha1 from 'sha1';
 import express from 'express';
-import { User as UserModel } from '../models/user';
+import UserModel from '../models/user';
 import check from '../middlewares/check';
 
 const router = express.Router();
