@@ -1,8 +1,14 @@
-var User = require('../lib/mongo').User;
+import User from '../lib/mongo';
 
-module.exports = {
-  //注册用户
-  create: function create(user){
-    return User.create(user).exec();
-  }
+export default {
+  // 注册用户
+  // Eslint object-shorthand
+  // create(user) {
+  //   return User.create(user).exec();
+  // },
+  create: user => User.create(user).exec(),
+  getUserByName: name => User
+      .findOne({ name })
+      .addCreatedAt()
+      .exec(),
 };

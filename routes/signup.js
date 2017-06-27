@@ -1,12 +1,12 @@
-const fs = require('fs');
-const path = require('path');
-const sha1 = require('sha1');
-const express = require('express');
+import fs from 'fs';
+import path from 'path';
+import sha1 from 'sha1';
+import express from 'express';
+import { User as UserModel } from '../models/user';
+import check from '../middlewares/check';
 
 const router = express.Router();
-
-const UserModel = require('../models/user');
-const checkNotLogin = require('../middlewares/check').checkNotLogin;
+const checkNotLogin = check.checkNotLogin;
 
 // GET /signup 注册页
 router.get('/', checkNotLogin, (req, res) => {

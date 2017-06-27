@@ -5,7 +5,9 @@ module.exports = {
     "semi": ["error", "always"],
     "consistent-return": "off",
     "linebreak-style": "off",
-    "no-var": "off"
+    "no-var": "off",
+    "no-param-reassign": 0,
+    "no-underscore-dangle": 0
   },
   parserOptions: {
     "ecmaVersion": 6,
