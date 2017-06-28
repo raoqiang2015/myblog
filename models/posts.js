@@ -43,4 +43,15 @@ export default {
   // 通过文章id给PV加1
   incPv: postId => Post
     .update({ _id: postId }, { $inc: { pv: 1 } }),
+  // 通过文章id获取一篇原生文章（编辑文章）
+  getRawPostById: postId => Post
+    .findOne({ _id: postId })
+    .populate({ path: 'author', model: 'User' })
+    .exec(),
+  // 通过用户id和文章id更新一篇文章
+  updatePostById: (postId, author, data) => Post
+    .update({ author, _id: postId }, { $set: data }).exec(),
+  // 通过用户id和文章id删除一篇文章
+  delPostById: (postId, author) => Post
+    .remove({ author, _id: postId }).exec(),
 };
