@@ -40,4 +40,7 @@ export default {
       .contentToHtml()
       .exec();
   },
+  // 通过文章id给PV加1
+  incPv: postId => Post
+    .update({ _id: postId }, { $inc: { pv: 1 } }),
 };

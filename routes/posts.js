@@ -6,9 +6,14 @@ const router = express.Router();
 const checkLogin = check.checkLogin;
 
 // GET /posts 所有用户或者特定用户的文章页
-// eg:GET /posts?autor=xxx
-router.get('/', checkLogin, (req, res) => {
-  res.render('posts');
+// eg:GET /posts?author=xxx
+router.get('/', checkLogin, (req, res, next) => {
+  const author = req.query.author;
+  PostModel.getPosts(author)
+    .then((posts) => {
+      res.render('posts', { posts });
+    })
+    .catch(next);
 });
 
 // POST /posts 发表一篇文章
@@ -51,8 +56,21 @@ router.get('/create', checkLogin, (req, res) => {
 });
 
 // GET /posts/:postId 单独一篇文章页
-router.get('/:postId', checkLogin, (req, res) => {
-  res.send(req, req.flash());
+router.get('/:postId', checkLogin, (req, res, next) => {
+  const postId = req.params.postId;
+
+  Promise.all([
+    PostModel.getPostById(postId), // 获取文章信息
+    PostModel.incPv(postId),
+  ])
+  .then((result) => {
+    const post = result[0];
+    if (!post) {
+      throw new Error('该文章不存在的');
+    }
+    res.render('post', { post });
+  })
+  .catch(next);
 });
 
 // GET /posts/:postId/edit 更新文章页
