@@ -74,13 +74,36 @@ router.get('/:postId', checkLogin, (req, res, next) => {
 });
 
 // GET /posts/:postId/edit 更新文章页
-router.get('/:postId/edit', checkLogin, (req, res) => {
-  res.send(req.flash());
+router.get('/:postId/edit', checkLogin, (req, res, next) => {
+  const postId = req.params.postId;
+  const author = req.session.user._id;
+
+  PostModel.getRawPostById(postId)
+    .then((post) => {
+      if (!post) {
+        throw new Error('该文章不存在');
+      }
+      if (author.toString() !== post.author._id.toString()) {
+        throw new Error('权限不够');
+      }
+      res.render('edit', { post });
+    })
+    .catch(next);
 });
 
 // POST /posts/:postId/edit 更新一篇文章
-router.post('/:postId/edit', checkLogin, (req, res) => {
-  res.send(req.flash());
+router.post('/:postId/edit', checkLogin, (req, res, next) => {
+  const postId = req.params.postId;
+  const author = req.session.user._id;
+  const title = req.fields.title;
+  const content = req.fields.content;
+
+  PostModel.updatePostById(postId, author, { title, content })
+    .then(() => {
+      res.flash('success', '编辑文章成功');
+      res.redirect(`/posts/${postId}`);
+    })
+    .catch(next);
 });
 
 // GET /posts/:postId/remove 删除一篇文章
