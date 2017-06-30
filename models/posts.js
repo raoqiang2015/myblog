@@ -1,5 +1,6 @@
 import marked from 'marked';
 import { Post } from '../lib/mongo';
+import CommentModel from './comments';
 
 // 将post的content从markdown转成html
 Post.plugin('contentToHtml', {
@@ -13,6 +14,12 @@ Post.plugin('contentToHtml', {
     }
     return post;
   },
+});
+
+Post.plugin('addCommentsCount', {
+  afterFind: posts => Promise.all(),
+  afterFindOne: post => CommentModel.getCommentsCounts(post._id)
+    .then(),
 });
 
 export default {
@@ -53,5 +60,12 @@ export default {
     .update({ author, _id: postId }, { $set: data }).exec(),
   // 通过用户id和文章id删除一篇文章
   delPostById: (postId, author) => Post
-    .remove({ author, _id: postId }).exec(),
+    .remove({ author, _id: postId })
+    .exec()
+    .then((res) => {
+      // 文章删除后，再删除该文章下的所有留言
+      if (res.result.ok && res.result.n > 0) {
+        return CommentModel.delCommentsByPostId(postId);
+      }
+    }),
 };
