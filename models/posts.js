@@ -1,5 +1,6 @@
 import marked from 'marked';
 import { Post } from '../lib/mongo';
+import CommentModel from './comments';
 
 // 将post的content从markdown转成html
 Post.plugin('contentToHtml', {
@@ -15,6 +16,19 @@ Post.plugin('contentToHtml', {
   },
 });
 
+Post.plugin('addCommentsCount', {
+  afterFind: posts => Promise.all(posts.map(post => CommentModel.getCommentsCounts(post._id)
+      .then((commentsCount) => {
+        post.commentCount = commentsCount;
+        return post;
+      }))),
+  afterFindOne: post => CommentModel.getCommentsCounts(post._id)
+    .then((count) => {
+      post.commentCount = count;
+      return post;
+    }),
+});
+
 export default {
   // 创建一篇文章
   create: post => Post.create(post).exec(),
@@ -24,6 +38,7 @@ export default {
     .findOne({ _id: postId })
     .populate({ path: 'author', model: 'User' })
     .addCreatedAt()
+    .addCommentsCount()
     .contentToHtml()
     .exec(),
   // 按创建时间降序获取所有用户文章或者某个特定用户的所有文章
@@ -37,6 +52,7 @@ export default {
       .populate({ path: 'author', model: 'User' })
       .sort({ _id: -1 })
       .addCreatedAt()
+      .addCommentsCount()
       .contentToHtml()
       .exec();
   },
@@ -53,5 +69,12 @@ export default {
     .update({ author, _id: postId }, { $set: data }).exec(),
   // 通过用户id和文章id删除一篇文章
   delPostById: (postId, author) => Post
-    .remove({ author, _id: postId }).exec(),
+    .remove({ author, _id: postId })
+    .exec()
+    .then((res) => {
+      // 文章删除后，再删除该文章下的所有留言
+      if (res.result.ok && res.result.n > 0) {
+        return CommentModel.delCommentsByPostId(postId);
+      }
+    }),
 };

@@ -1,6 +1,7 @@
 import express from 'express';
 import check from '../middlewares/check';
 import PostModel from '../models/posts';
+import CommentModel from '../models/comments';
 
 const router = express.Router();
 const checkLogin = check.checkLogin;
@@ -62,13 +63,15 @@ router.get('/:postId', checkLogin, (req, res, next) => {
   Promise.all([
     PostModel.getPostById(postId), // 获取文章信息
     PostModel.incPv(postId),
+    CommentModel.getComments(postId),
   ])
   .then((result) => {
     const post = result[0];
+    const comments = result[1];
     if (!post) {
       throw new Error('该文章不存在的');
     }
-    res.render('post', { post });
+    res.render('post', { post, comments });
   })
   .catch(next);
 });
@@ -100,24 +103,54 @@ router.post('/:postId/edit', checkLogin, (req, res, next) => {
 
   PostModel.updatePostById(postId, author, { title, content })
     .then(() => {
-      res.flash('success', '编辑文章成功');
+      req.flash('success', '编辑文章成功');
       res.redirect(`/posts/${postId}`);
     })
     .catch(next);
 });
 
 // GET /posts/:postId/remove 删除一篇文章
-router.get('/:postId/remove', checkLogin, (req, res) => {
-  res.send(req.flash());
+router.get('/:postId/remove', checkLogin, (req, res, next) => {
+  const postId = req.params.postId;
+  const author = req.session.user._id;
+
+  PostModel.delPostById(postId, author)
+    .then(() => {
+      req.flash('success', '删除文章成功');
+      res.redirect('/posts');
+    })
+    .catch(next);
 });
 
 // POST /posts/:postId/comment 创建一条留言
-router.get('/:postId/comment', checkLogin, (req, res) => {
-  res.send(req.flash());
+router.get('/:postId/comment', checkLogin, (req, res, next) => {
+  const postId = req.params.postId;
+  const author = req.session.user._id;
+  const content = req.fields.content;
+
+  const comment = {
+    author, content, postId,
+  };
+  CommentModel.create(comment)
+    .then(() => {
+      req.flash('success', '留言成功');
+      // 留言成功后跳转达到上一页
+      res.redirect('back');
+    })
+    .catch(next);
 });
 
 // GET /posts/:postId/comment/:commentId/remove 删除一条留言
-router.get('/:postId/comment/:commentId/remove', checkLogin, (req, res) => {
+router.get('/:postId/comment/:commentId/remove', checkLogin, (req, res, next) => {
+  const commentId = req.params.commentId;
+  const author = req.session.user._id;
+
+  CommentModel.delCommentsById(author, commentId)
+    .then(() => {
+      req.flash('success', '删除留言成功');
+      res.redirect('back');
+    })
+    .catch(next);
   res.send(req.flash());
 });
 
