@@ -17,9 +17,16 @@ Post.plugin('contentToHtml', {
 });
 
 Post.plugin('addCommentsCount', {
-  afterFind: posts => Promise.all(),
+  afterFind: posts => Promise.all(posts.map(post => CommentModel.getCommentsCounts(post._id)
+      .then((commentsCount) => {
+        post.commentCount = commentsCount;
+        return post;
+      }))),
   afterFindOne: post => CommentModel.getCommentsCounts(post._id)
-    .then(),
+    .then((count) => {
+      post.commentCount = count;
+      return post;
+    }),
 });
 
 export default {
@@ -31,6 +38,7 @@ export default {
     .findOne({ _id: postId })
     .populate({ path: 'author', model: 'User' })
     .addCreatedAt()
+    .addCommentsCount()
     .contentToHtml()
     .exec(),
   // 按创建时间降序获取所有用户文章或者某个特定用户的所有文章
@@ -44,6 +52,7 @@ export default {
       .populate({ path: 'author', model: 'User' })
       .sort({ _id: -1 })
       .addCreatedAt()
+      .addCommentsCount()
       .contentToHtml()
       .exec();
   },

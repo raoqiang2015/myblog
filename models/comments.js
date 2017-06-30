@@ -1,11 +1,18 @@
 import marked from 'marked';
 import { Comment } from '../lib/mongo';
 
+// 将comment的content从markdown转换成html
 Comment.plugin('contentToHtml', {
   afterFind: comments => comments.map((comment) => {
     comment.content = marked(comment.content);
     return comment;
   }),
+  afterFindOne: (comment) => {
+    if (comment) {
+      comment.content = marked(comment.content);
+    }
+    return comment;
+  },
 });
 
 export default {

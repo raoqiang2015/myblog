@@ -123,17 +123,34 @@ router.get('/:postId/remove', checkLogin, (req, res, next) => {
 });
 
 // POST /posts/:postId/comment 创建一条留言
-router.get('/:postId/comment', checkLogin, (req, res) => {
+router.get('/:postId/comment', checkLogin, (req, res, next) => {
   const postId = req.params.postId;
   const author = req.session.user._id;
   const content = req.fields.content;
 
-  C;
-  res.send(req.flash());
+  const comment = {
+    author, content, postId,
+  };
+  CommentModel.create(comment)
+    .then(() => {
+      req.flash('success', '留言成功');
+      // 留言成功后跳转达到上一页
+      res.redirect('back');
+    })
+    .catch(next);
 });
 
 // GET /posts/:postId/comment/:commentId/remove 删除一条留言
-router.get('/:postId/comment/:commentId/remove', checkLogin, (req, res) => {
+router.get('/:postId/comment/:commentId/remove', checkLogin, (req, res, next) => {
+  const commentId = req.params.commentId;
+  const author = req.session.user._id;
+
+  CommentModel.delCommentsById(author, commentId)
+    .then(() => {
+      req.flash('success', '删除留言成功');
+      res.redirect('back');
+    })
+    .catch(next);
   res.send(req.flash());
 });
 
