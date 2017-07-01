@@ -7,7 +7,8 @@ module.exports = {
     "linebreak-style": "off",
     "no-var": "off",
     "no-param-reassign": 0,
-    "no-underscore-dangle": 0
+    "no-underscore-dangle": 0,
+    "no-unused-vars": 0,
   },
   parserOptions: {
     "ecmaVersion": 6,

@@ -7,11 +7,11 @@
         <% comments.forEach(function(comment){ %>
           <div class="comment">
             <span class="avatar">
-              <img src="/img/<%= comment.author.avatar %>">
+              <img class="avatar" src="/img/<%= comment.author.avatar %>">
             </span>
             <div class="content">
               <a href="/posts?author=<%= comment.author._id %>" class="author"><%= comment.author.name %></a>
-              <div class="metadata"><span class="date"><%= comment.created._at %></span></div>
+              <div class="metadata"><span class="date"><%= comment.created_at %></span></div>
               <div class="text"><%- comment.content %></div>
               <% if (user && comment.author._id && user._id.toString() === comment.author._id.toString()) { %>
                   <div class="actions">

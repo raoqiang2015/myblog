@@ -67,7 +67,7 @@ router.get('/:postId', checkLogin, (req, res, next) => {
   ])
   .then((result) => {
     const post = result[0];
-    const comments = result[1];
+    const comments = result[2];
     if (!post) {
       throw new Error('该文章不存在的');
     }
@@ -123,7 +123,7 @@ router.get('/:postId/remove', checkLogin, (req, res, next) => {
 });
 
 // POST /posts/:postId/comment 创建一条留言
-router.get('/:postId/comment', checkLogin, (req, res, next) => {
+router.post('/:postId/comment', checkLogin, (req, res, next) => {
   const postId = req.params.postId;
   const author = req.session.user._id;
   const content = req.fields.content;
@@ -144,14 +144,12 @@ router.get('/:postId/comment', checkLogin, (req, res, next) => {
 router.get('/:postId/comment/:commentId/remove', checkLogin, (req, res, next) => {
   const commentId = req.params.commentId;
   const author = req.session.user._id;
-
-  CommentModel.delCommentsById(author, commentId)
+  CommentModel.delCommentById(author, commentId)
     .then(() => {
       req.flash('success', '删除留言成功');
       res.redirect('back');
     })
     .catch(next);
-  res.send(req.flash());
 });
 
 module.exports = router;

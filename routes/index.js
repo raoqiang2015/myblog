@@ -14,4 +14,9 @@ module.exports = (app) => {
   app.use('/signin', signinRoute);
   app.use('/signout', signoutRoute);
   app.use('/posts', postsRoute);
+  app.use((req, res) => {
+    if (!res.headersSent) {
+      res.status(404).render('404');
+    }
+  });
 };

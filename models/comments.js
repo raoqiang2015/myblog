@@ -33,9 +33,9 @@ export default {
       .exec();
   },
   // 通过用户Id和留言Id删除一个留言
-  delCommentsById: (author, Id) => {
-    Comment.remove({ author, Id }).exec();
-  },
+  delCommentById: (author, commentId) => Comment.remove({ author, _id: commentId }).exec(),
+  // 通过用户Id
+  delCommentsByPostId: postId => Comment.remove({ postId }).exec(),
   // 通过文章Id 获取该文章留言数
   getCommentsCounts: postId => Comment
     .count({ postId }).exec(),

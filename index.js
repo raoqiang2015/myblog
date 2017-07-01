@@ -61,6 +61,11 @@ app.use((req, res, next) => {
 // 使用路由
 routes(app);
 
+// error page
+app.use((err, req, res, next) => {
+  res.render('error', { error: err });
+});
+
 // 监听端口
 app.listen(config.port, () => {
   console.log('%s listening on port %s', pkg.name, config.port);
