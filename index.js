@@ -4,6 +4,8 @@ import session from 'express-session';
 import mongoConnect from 'connect-mongo';
 import flash from 'connect-flash';
 import configLite from 'config-lite';
+import winston from 'winston';
+import expressWinston from 'express-winston';
 import routes from './routes';
 import pkg from './package.json';
 
@@ -58,8 +60,37 @@ app.use((req, res, next) => {
   next();
 });
 
+// 记录正常请求日志
+app.use(expressWinston.logger({
+  transports: [
+    new (winston.transports.Console)({
+      json: true,
+      colorize: true,
+    }),
+    new (winston.transports.File)({
+      name: 'success-file',
+      filename: 'logs/success.log',
+    }),
+  ],
+}));
+
 // 使用路由
 routes(app);
+
+// 记录错误请求日志
+app.use(expressWinston.errorLogger({
+  transports: [
+    new (winston.transports.Console)({
+      json: true,
+      colorize: true,
+    }),
+    new (winston.transports.File)({
+      name: 'error-file',
+      filename: 'logs/error.log',
+      level: 'error',
+    }),
+  ],
+}));
 
 // error page
 app.use((err, req, res, next) => {

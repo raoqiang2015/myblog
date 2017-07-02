@@ -6,7 +6,7 @@ import signinRoute from './signin';
 import signoutRoute from './signout';
 import postsRoute from './posts';
 
-module.exports = (app) => {
+export default (app) => {
   app.get('/', (req, res) => {
     res.redirect('/posts');
   });

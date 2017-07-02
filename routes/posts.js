@@ -152,4 +152,4 @@ router.get('/:postId/comment/:commentId/remove', checkLogin, (req, res, next) =>
     .catch(next);
 });
 
-module.exports = router;
+export default router;
