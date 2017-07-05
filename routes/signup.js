@@ -72,7 +72,7 @@ router.post('/', checkNotLogin, (req, res, next) => {
       // 用户名被占用则跳回注册页,而不是错误页
       if (e.message.match('E11000 duplicate key')) {
         req.flash('error', '用户名已被注册');
-        return req.redirect('./signup');
+        return res.redirect('./signup');
       }
       next(e);
     });

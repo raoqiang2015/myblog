@@ -97,7 +97,12 @@ app.use((err, req, res, next) => {
   res.render('error', { error: err });
 });
 
-// 监听端口
-app.listen(config.port, () => {
-  console.log('%s listening on port %s', pkg.name, config.port);
-});
+if (module.parent) {
+  // 测试用 如果被require则导出app
+  module.exports = app;
+} else {
+  // 监听端口
+  app.listen(config.port, () => {
+    console.log('%s listening on port %s', pkg.name, config.port);
+  });
+}
